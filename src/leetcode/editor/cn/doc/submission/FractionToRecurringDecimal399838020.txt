@@ -1,0 +1,55 @@
+class Solution {
+    public String fractionToDecimal(int numerator, int denominator) {
+        String flag;
+        Long myNumerator = (long) numerator;
+        Long myDenominator = (long) denominator;
+        //判断符号
+        if(myNumerator<0 & myDenominator<0 || myNumerator>0 & myDenominator>0 || myNumerator == 0){
+            flag = "";
+        }
+        else {
+            flag = "-";
+        }
+
+        myNumerator = Math.abs(myNumerator);
+        myDenominator = Math.abs(myDenominator);
+
+        // 取余直到余数为零 or 余数出现重复
+        Long remainder = (long) myNumerator % myDenominator;
+        String intPart = Long.toString(myNumerator / myDenominator);
+        String decimalPart = "";
+
+        List<Long> remainderList = new ArrayList<>();
+        remainderList.add(remainder);
+
+        while(remainder != 0) {
+            remainder = remainder * 10;
+            myDenominator = myDenominator;
+            String s = Long.toString(remainder / myDenominator);
+            decimalPart = decimalPart + s;
+            remainder = remainder % myDenominator;
+
+            if(remainderList.contains(remainder)){
+                // 找出循环部分
+                Integer firstPlace = remainderList.indexOf(remainder);
+                Integer lastPlace = remainderList.size();
+
+                String nonRecurPart = decimalPart.substring(0, firstPlace);
+                String recurPart = "(" + decimalPart.substring(firstPlace, lastPlace) + ")";
+
+                decimalPart = nonRecurPart + recurPart;
+
+                break;
+            }
+            remainderList.add(remainder);
+        }
+        if(decimalPart != "") {
+            decimalPart = "." + decimalPart;
+        }
+
+        return flag + intPart + decimalPart;
+    }
+}
+
+//runtime:13 ms
+//memory:41.9 MB
